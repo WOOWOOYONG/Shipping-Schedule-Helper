@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>出貨排定</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <section class="add_data">
+      <div class="add_wrapper">
+        <div class="title">請輸入預定出貨排定資料</div>
+        <form class="add_form">
+          <div class="input_field">
+            <label for="region">地區</label>
+            <select name="出貨地區" id="region" class="add_select">
+              <option value="北區">北區</option>
+              <option value="中區">中區</option>
+              <option value="南區">南區</option>
+            </select>
+          </div>
+          <div class="input_field">
+            <label for="">業主</label>
+            <input
+              type="text"
+              class="input"
+              placeholder="請輸入業主名稱"
+              id="name"
+            />
+          </div>
+          <div class="input_field">
+            <label for="date">日期</label>
+            <input type="date" class="input" id="date" />
+          </div>
+          <div class="input_field">
+            <label for="products">品項</label>
+            <select name="品項" id="products" class="add_select">
+              <option value="商品A">商品A</option>
+              <option value="商品B">商品B</option>
+              <option value="商品C">商品C</option>
+            </select>
+          </div>
+          <div class="input_field">
+            <label for="number">數量</label>
+            <input
+              type="number"
+              placeholder="請輸入出貨數量"
+              class="input"
+              min="1"
+              id="quantity"
+            />
+          </div>
+          <div class="input_field">
+            <label for="description">備註</label>
+            <textarea class="textarea" id="description"></textarea>
+          </div>
+          <input type="button" value="新增" class="add_btn" />
+        </form>
+      </div>
+    </section>
+    <section class="list">
+      <select name="" id="" class="search_select">
+        <option value="地區搜尋" disabled selected hidden>地區搜尋</option>
+        <option value="全部地區">全部地區</option>
+        <option value="北區">北區</option>
+        <option value="中區">中區</option>
+        <option value="南區">南區</option>
+      </select>
+      <div>
+        <table class="orderTable">
+          <thead>
+            <tr>
+              <th>地區</th>
+              <th>業主名稱</th>
+              <th>日期</th>
+              <th>品項</th>
+              <th>數量</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody class="orderList">
+            <!-- <tr>
+              <td>北區</td>
+              <td>台北101</td>
+              <td>2022/11/13</td>
+              <td>商品A</td>
+              <td>30</td>
+              <td>VIP客戶，請確實品檢</td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+</html>
