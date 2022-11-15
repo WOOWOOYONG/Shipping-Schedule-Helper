@@ -2,7 +2,7 @@
 
 ### 情境:
 
-公司接到訂單後，需制定出貨排程以便確認庫存是否足夠
+公司接到訂單後，可安排出貨日程及整理商品需求資訊，分析數據了解銷售狀況
 
 ### 功能:
 
@@ -16,5 +16,9 @@
 - 依照日期排序
 - 出貨/未出貨頁籤
 - 出貨數據整合......
+
+### 使用工具
+
+- [Validate.js](https://validatejs.org/#validate-js)
 
 [GitHub Pages](https://woowooyong.github.io/Shipping-Schedule-Helper/)

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>出貨排定</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -23,16 +24,23 @@
           </div>
           <div class="input_field">
             <label for="">業主</label>
-            <input
-              type="text"
-              class="input"
-              placeholder="請輸入業主名稱"
-              id="name"
-            />
+            <div class="inputarea">
+              <input
+                type="text"
+                class="input"
+                placeholder="請輸入業主名稱"
+                id="clientName"
+                name="clientName"
+              />
+              <div class="messages clientName"></div>
+            </div>
           </div>
           <div class="input_field">
             <label for="date">日期</label>
-            <input type="date" class="input" id="date" />
+            <div class="inputarea">
+              <input type="date" class="input" id="date" name="date" />
+              <div class="messages date"></div>
+            </div>
           </div>
           <div class="input_field">
             <label for="products">品項</label>
@@ -44,13 +52,17 @@
           </div>
           <div class="input_field">
             <label for="number">數量</label>
-            <input
-              type="number"
-              placeholder="請輸入出貨數量"
-              class="input"
-              min="1"
-              id="quantity"
-            />
+            <div class="inputarea">
+              <input
+                type="number"
+                placeholder="請輸入出貨數量"
+                class="input"
+                min="1"
+                id="quantity"
+                name="quantity"
+              />
+              <div class="messages quantity"></div>
+            </div>
           </div>
           <div class="input_field">
             <label for="description">備註</label>

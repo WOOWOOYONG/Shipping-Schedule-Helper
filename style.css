@@ -92,7 +92,18 @@ body {
     background-color: rgb(200, 196, 196);
 }
 
-/* 排定出貨清單*/
+/*表單驗證錯誤訊息*/
+.inputarea {
+    width: 100%;
+}
+
+.messages {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: rgb(29, 49, 161);
+}
+
+/* 出貨清單頁面*/
 .list {
     width: 70%;
 
@@ -127,7 +138,5 @@ body {
 .orderTable tbody tr {
     border-bottom: 1px solid #ddd;
 }
-
-
 
 
