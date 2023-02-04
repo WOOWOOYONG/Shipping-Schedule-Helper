@@ -5,7 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>出貨排定</title>
-    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="/styles/all.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     <script src="script.js" defer></script>
   </head>
@@ -23,12 +27,12 @@
             </select>
           </div>
           <div class="input_field">
-            <label for="">業主</label>
+            <label for="">案件</label>
             <div class="inputarea">
               <input
                 type="text"
                 class="input"
-                placeholder="請輸入業主名稱"
+                placeholder="請輸入案件名稱"
                 id="clientName"
                 name="clientName"
               />
@@ -73,23 +77,42 @@
       </div>
     </section>
     <section class="list">
-      <select name="" id="" class="search_select">
-        <option value="地區搜尋" disabled selected hidden>地區搜尋</option>
-        <option value="全部地區">全部地區</option>
-        <option value="北區">北區</option>
-        <option value="中區">中區</option>
-        <option value="南區">南區</option>
-      </select>
+      <div class="filterArea">
+        <select name="" id="" class="search_by_region">
+          <option value="依地區搜尋" disabled selected hidden>
+            依地區搜尋
+          </option>
+          <option value="全部地區">全部地區</option>
+          <option value="北區">北區</option>
+          <option value="中區">中區</option>
+          <option value="南區">南區</option>
+        </select>
+        <select name="" id="" class="search_by_product">
+          <option value="依品項搜尋" disabled selected hidden>
+            依品項搜尋
+          </option>
+          <option value="全部品項">全部品項</option>
+          <option value="商品A">商品A</option>
+          <option value="商品B">商品B</option>
+          <option value="商品C">商品C</option>
+        </select>
+      </div>
+
+      <input type="text" placeholder="請輸入案件名稱" class="search_input" />
+      <input type="button" class="search_btn" value="搜尋" />
       <div>
         <table class="orderTable">
           <thead>
             <tr>
               <th>地區</th>
-              <th>業主名稱</th>
+              <th>案件名稱</th>
               <th>日期</th>
               <th>品項</th>
               <th>數量</th>
               <th>備註</th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody class="orderList">

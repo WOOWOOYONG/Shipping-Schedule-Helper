@@ -1,81 +1,50 @@
-let data = [
-  {
-    id: 0,
-    region: "北區",
-    clientName: "台北101",
-    date: "2022/11/13",
-    product: "商品A",
-    quantity: 5,
-    description: "VIP客戶，請確實品檢",
-  },
-  {
-    id: 1,
-    region: "中區",
-    clientName: "台中植物園",
-    date: "2022/11/20",
-    product: "商品B",
-    quantity: 6,
-    description: "數量可能會再變更",
-  },
-  {
-    id: 2,
-    region: "南區",
-    clientName: "高雄巨蛋",
-    date: "2022/12/10",
-    product: "商品C",
-    quantity: 3,
-    description: "可能提前到12/3出貨",
-  },
-  {
-    id: 3,
-    region: "南區",
-    clientName: "高雄流行音樂中心",
-    date: "2022/12/15",
-    product: "商品A",
-    quantity: 2,
-    description: "無",
-  },
-];
+// json-server-url
+const url = "https://try-rwrv.onrender.com/orders";
+let orderData = [];
+
+//取得訂單資料
+const getOrderData = async () => {
+  try {
+    const response = await fetch(url);
+    orderData = await response.json();
+    console.log(orderData);
+    //init
+    render(orderData);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getOrderData();
 
 const orderList = document.querySelector(".orderList");
-const regionSelect = document.querySelector(".search_select");
 
-function render(location) {
+// 渲染訂單資料
+const render = (orderData) => {
   let str = "";
-
-  //filter
-  const filterData = data.filter((item) => {
-    if (location === item.region) {
-      return item;
-    } else if (location === "全部地區") {
-      return item;
-    } else if (!location) {
-      return item;
-    }
-  });
-  filterData.forEach((item) => {
+  orderData.forEach((item) => {
     str += `
     <tr>
-    <td>${item.region}</td>
-    <td>${item.clientName}</td>
-    <td>${item.date}</td>
-    <td>${item.product}</td>
-    <td>${item.quantity}</td>
-    <td>${item.description}</td>
+    <td id="region${item.id}">${item.region}</td>
+    <td id="clientName${item.id}">${item.clientName}</td>
+    <td id="date${item.id}">${item.date}</td>
+    <td id="product${item.id}">${item.product}</td>
+    <td id="quantity${item.id}">${item.quantity}</td>
+    <td id="description${item.id}">${item.description}</td>
+    <td><button class="edit_btn" id="edit_btn${item.id}" data-id=${item.id}>編輯</button></td>
+    <td><button class="save_btn" id="save_btn${item.id}" data-id=${item.id} style="display:none">確定變更</button></td>
+    <td data-id=${item.id} class="delete_btn"><i data-id=${item.id} class="bi bi-trash"></i></td>
   </tr>
     `;
   });
   orderList.innerHTML = str;
-}
+};
 
-// init;
-render();
-
+//新增訂單表格
 const form = document.querySelector(".add_form");
 const inputs = document.querySelectorAll(
   "input[type=text],input[type=date],input[type=number]"
 );
-
 const region = document.querySelector("#region");
 const clientName = document.querySelector("#clientName");
 const date = document.querySelector("#date");
@@ -84,8 +53,8 @@ const quantity = document.querySelector("#quantity");
 const description = document.querySelector("#description");
 const addBtn = document.querySelector(".add_btn");
 
-//增加訂單資料;
-function addOrder() {
+//新增訂單資料;
+const addOrderHandler = () => {
   if (clientName.value == "" || date.value == "" || quantity.value == "") {
     showErrors();
     return;
@@ -93,26 +62,236 @@ function addOrder() {
     inputs.forEach((item) => {
       item.nextElementSibling.textContent = "";
     });
-    data.push({
-      id: Date.now(),
+    const newOrder = {
       region: region.value,
       clientName: clientName.value.trim(),
       date: date.value,
       product: product.value,
       quantity: quantity.value,
       description: description.value.trim(),
-    });
+    };
+    addOrderData(newOrder);
     form.reset();
-    // 重新渲染畫面
-    render();
   }
-}
+};
 
-addBtn.addEventListener("click", addOrder);
+const addOrderData = async (newOrder) => {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newOrder),
+    });
+    if (res.ok) {
+      console.log("新增成功");
+    }
+    getOrderData();
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-// 篩選地區資料
+addBtn.addEventListener("click", addOrderHandler);
+
+//刪除訂單資料
+const deleteOrder = async (id) => {
+  let msg = "確定要刪除?";
+  if (confirm(msg)) {
+    try {
+      const res = await fetch(url + `/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        console.log("刪除成功");
+      }
+      getOrderData();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return;
+};
+
+const deleteOrderHandler = (e) => {
+  if (e.target.getAttribute("class") == "bi bi-trash") {
+    const orderId = e.target.getAttribute("data-id");
+    deleteOrder(orderId);
+  }
+};
+
+orderList.addEventListener("click", deleteOrderHandler);
+
+//編輯訂單資料
+const editOrder = (id) => {
+  const region = document.getElementById(`region${id}`);
+  const clientName = document.getElementById(`clientName${id}`);
+  const date = document.getElementById(`date${id}`);
+  const product = document.getElementById(`product${id}`);
+  const quantity = document.getElementById(`quantity${id}`);
+  const description = document.getElementById(`description${id}`);
+
+  const regionData = region.textContent;
+  const clientNameData = clientName.textContent;
+  const dateData = date.textContent;
+  const productData = product.textContent;
+  const quantityData = quantity.textContent;
+  const descriptionData = description.textContent;
+
+  // region.innerHTML = `<input type='text' id="regionInput${id}" value="${regionData}">`;
+  region.innerHTML = `<select id="regionInput${id}"> 
+                         <option value="北區" 
+                          ${
+                            regionData === "北區" ? "selected" : ""
+                          }>北區</option>
+                         <option value="中區" 
+                         ${
+                           regionData === "中區" ? "selected" : ""
+                         }>中區</option>
+                         <option value="南區"
+                         ${
+                           regionData === "南區" ? "selected" : ""
+                         }>南區</option>
+                       </select>`;
+  clientName.innerHTML = `<input type='text' id="clientNameInput${id}" value="${clientNameData}">`;
+  date.innerHTML = `<input type='date' id="dateInput${id}" value="${dateData}">`;
+  // product.innerHTML = `<input type='text' id="productInput${id}" value="${productData}">`;
+  product.innerHTML = `<select  id="productInput${id}"> 
+                          <option value="商品A"
+                          ${productData === "商品A" ? "selected" : ""}
+                          >商品A</option>
+                          <option value="商品B"
+                          ${productData === "商品B" ? "selected" : ""}
+                          >商品B</option>
+                          <option value="商品C"
+                          ${productData === "商品C" ? "selected" : ""}
+                          >商品C</option>
+                        </select>`;
+  quantity.innerHTML = `<input type='number' id="quantityInput${id}" value="${quantityData}">`;
+  description.innerHTML = `<input type='text' id="descriptionInput${id}" value="${descriptionData}">`;
+};
+
+//儲存更改後的訂單資料
+const saveOrder = (id) => {
+  const regionValue = document.getElementById(`regionInput${id}`).value;
+  const clientNameValue = document.getElementById(`clientNameInput${id}`).value;
+  const dateValue = document.getElementById(`dateInput${id}`).value;
+  const productValue = document.getElementById(`productInput${id}`).value;
+  const quantityValue = document.getElementById(`quantityInput${id}`).value;
+  const descriptionValue = document.getElementById(
+    `descriptionInput${id}`
+  ).value;
+  const editedOrder = {
+    region: regionValue,
+    clientName: clientNameValue,
+    date: dateValue,
+    product: productValue,
+    quantity: quantityValue,
+    description: descriptionValue,
+  };
+  editOrderData(editedOrder, id);
+};
+
+const editOrderData = async (editedOrder, id) => {
+  try {
+    const res = await fetch(url + `/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedOrder),
+    });
+    if (res.ok) {
+      console.log("修改成功");
+    }
+    getOrderData();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const editOrderHandler = (e) => {
+  if (e.target.getAttribute("class") == "edit_btn") {
+    e.target.style.display = "none";
+    const orderId = e.target.getAttribute("data-id");
+    const saveBtn = document.getElementById(`save_btn${orderId}`);
+    saveBtn.style.display = "block";
+    editOrder(orderId);
+  }
+};
+const saveOrderHandler = (e) => {
+  if (e.target.getAttribute("class") == "save_btn") {
+    e.target.style.display = "none";
+    const orderId = e.target.getAttribute("data-id");
+    const editBtn = document.getElementById(`edit_btn${orderId}`);
+    editBtn.style.display == "block";
+    saveOrder(orderId);
+  }
+};
+
+orderList.addEventListener("click", editOrderHandler);
+orderList.addEventListener("click", saveOrderHandler);
+
+// 依地區篩選
+const filterByRegion = (region) => {
+  const filteredData = orderData.filter((item) => {
+    if (region === item.region) {
+      return item;
+    } else if (region === "全部地區") {
+      return item;
+    } else if (!region) {
+      return item;
+    }
+  });
+  render(filteredData);
+};
+const regionSelect = document.querySelector(".search_by_region");
 regionSelect.addEventListener("change", () => {
-  render(regionSelect.value);
+  productSelect.value = "依品項搜尋";
+  filterByRegion(regionSelect.value);
+});
+
+// 依品項篩選
+const filterByProduct = (product) => {
+  const filteredData = orderData.filter((item) => {
+    if (product === item.product) {
+      return item;
+    } else if (product === "全部品項") {
+      return item;
+    } else if (!product) {
+      return item;
+    }
+  });
+  render(filteredData);
+};
+
+const productSelect = document.querySelector(".search_by_product");
+productSelect.addEventListener("change", () => {
+  regionSelect.value = "依地區搜尋";
+  filterByProduct(productSelect.value);
+});
+
+// 依輸入案件名稱搜尋
+const searchInput = document.querySelector(".search_input");
+const searchBtn = document.querySelector(".search_btn");
+
+const searchOrder = () => {
+  if (searchInput.value.trim() === "") {
+    alert("請先輸入內容");
+    return;
+  }
+  const filteredData = orderData.filter((item) => {
+    return item.clientName.match(searchInput.value.trim());
+  });
+  searchInput.value = "";
+  render(filteredData);
+};
+
+searchBtn.addEventListener("click", () => {
+  regionSelect.value = "依地區搜尋";
+  productSelect.value = "依品項搜尋";
+  searchOrder();
 });
 
 //VALIDATE.JS 表單驗證

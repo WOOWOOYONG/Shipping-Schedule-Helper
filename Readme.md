@@ -8,17 +8,18 @@
 
 - 可新增預定出貨資訊
 - 可依地區篩選
+- 編輯出貨資訊
+- 刪除出貨資訊
 
 ### 待加入功能:
 
-- 編輯出貨資訊
-- 刪除出貨資訊
 - 依照日期排序
 - 出貨/未出貨頁籤
-- 出貨數據整合......
+- 預定出貨圖表
 
 ### 使用工具
 
 - [Validate.js](https://validatejs.org/#validate-js)
+- [JSON Server](https://github.com/typicode/json-server)
 
 [GitHub Pages](https://woowooyong.github.io/Shipping-Schedule-Helper/)
