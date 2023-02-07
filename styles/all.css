@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 1.2rem;
+  font-size: 18px;
 }
 * body {
   background-color: rgb(244, 244, 244);
@@ -85,6 +85,10 @@
   font-weight: bold;
   color: rgb(29, 49, 161);
 }
+* body .list {
+  max-width: 80%;
+  margin: 0 auto;
+}
 * body .list .top_list {
   display: flex;
   justify-content: space-between;
@@ -104,6 +108,20 @@
   padding: 3px 5px;
   font-size: 1rem;
   cursor: pointer;
+  border-radius: 5px;
+}
+* body .list .top_list .search_area div:last-child {
+  margin-bottom: 1rem;
+}
+* body .list .top_list .search_area div:last-child button {
+  padding: 4px 8px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+* body .list .top_list .search_area div:last-child .sort_active {
+  background-color: rgb(98, 141, 181);
+  color: #fff;
 }
 * body .list .top_list .total_product {
   font-size: 0.8rem;

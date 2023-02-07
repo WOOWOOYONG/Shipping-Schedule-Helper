@@ -11,9 +11,12 @@ const getOrderData = async () => {
     const response = await fetch(url);
     orderData = await response.json();
     console.log(orderData);
-    //init
+    //預設依出貨日期分類
+    const sortOrderData = orderData.sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
     setTimeout(() => {
-      render(orderData);
+      render(sortOrderData);
       getTotalProducts(orderData);
     }, 500);
   } catch (err) {
@@ -21,6 +24,7 @@ const getOrderData = async () => {
   }
 };
 
+//init
 getOrderData();
 
 // 渲染訂單資料
@@ -32,6 +36,7 @@ const render = (orderData) => {
     <td id="region${item.id}">${item.region}</td>
     <td id="clientName${item.id}">${item.clientName}</td>
     <td id="date${item.id}">${item.date}</td>
+    <td id="date${item.id}">${item.createAt}</td>
     <td id="product${item.id}">${item.product}</td>
     <td id="quantity${item.id}">${item.quantity}</td>
     <td id="description${item.id}">${item.description}</td>
@@ -67,10 +72,12 @@ const addOrderHandler = () => {
     inputs.forEach((item) => {
       item.nextElementSibling.textContent = "";
     });
+    const date = new Date();
     const newOrder = {
       region: region.value,
       clientName: clientName.value.trim(),
       date: date.value,
+      createAt: date.toISOString().split("T")[0],
       product: product.value,
       quantity: quantity.value,
       description: description.value.trim(),
@@ -356,6 +363,31 @@ const getTotalProducts = (orderData) => {
     </ul>
 `;
 };
+
+//依出貨日期排序
+const sortByShipBtn = document.querySelector(".sort_by_shipping");
+const sortByShipping = () => {
+  sortByShipBtn.classList.add("sort_active");
+  sortByAddBtn.classList.remove("sort_active");
+  const sortOrderData = orderData.sort((a, b) => {
+    //使用 new Date() 將字符串轉換為日期對象
+    return new Date(a.date) - new Date(b.date);
+  });
+  render(sortOrderData);
+};
+sortByShipBtn.addEventListener("click", sortByShipping);
+
+//依新增日期排序
+const sortByAddBtn = document.querySelector(".sort_by_adding");
+const sortByAdding = () => {
+  sortByAddBtn.classList.add("sort_active");
+  sortByShipBtn.classList.remove("sort_active");
+  const sortOrderData = orderData.sort((a, b) => {
+    return new Date(a.createAt) - new Date(b.createAt);
+  });
+  render(sortOrderData);
+};
+sortByAddBtn.addEventListener("click", sortByAdding);
 
 //VALIDATE.JS 表單驗證
 const constraints = {

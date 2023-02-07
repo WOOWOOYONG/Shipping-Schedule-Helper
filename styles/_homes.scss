@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 1.2rem;
+  font-size: 18px;
   body {
     background-color: rgb(244, 244, 244);
     padding: 0 2rem;
@@ -84,6 +84,8 @@
       }
     }
     .list {
+      max-width: 80%;
+      margin: 0 auto;
       .top_list {
         display: flex;
         justify-content: space-between;
@@ -103,6 +105,20 @@
             padding: 3px 5px;
             font-size: 1rem;
             cursor: pointer;
+            border-radius: 5px;
+          }
+          div:last-child {
+            margin-bottom: 1rem;
+            button {
+              padding: 4px 8px;
+              margin-right: 0.5rem;
+              cursor: pointer;
+              border-radius: 5px;
+            }
+            .sort_active {
+              background-color: rgb(98, 141, 181);
+              color: #fff;
+            }
           }
         }
         .total_product {
