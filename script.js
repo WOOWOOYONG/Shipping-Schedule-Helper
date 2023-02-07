@@ -2,13 +2,15 @@
 const url = "https://try-rwrv.onrender.com/orders";
 let orderData = [];
 
+const orderList = document.querySelector(".orderList");
+
 //取得訂單資料
 const getOrderData = async () => {
   try {
+    orderList.innerHTML = "<tr>Loading...</tr>";
     const response = await fetch(url);
     orderData = await response.json();
     console.log(orderData);
-    orderList.innerHTML = "<tr>Loading...</tr>";
     //init
     setTimeout(() => {
       render(orderData);
@@ -20,8 +22,6 @@ const getOrderData = async () => {
 };
 
 getOrderData();
-
-const orderList = document.querySelector(".orderList");
 
 // 渲染訂單資料
 const render = (orderData) => {
