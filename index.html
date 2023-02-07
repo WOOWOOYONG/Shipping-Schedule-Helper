@@ -77,29 +77,39 @@
       </div>
     </section>
     <section class="list">
-      <div class="filterArea">
-        <select name="" id="" class="search_by_region">
-          <option value="依地區搜尋" disabled selected hidden>
-            依地區搜尋
-          </option>
-          <option value="全部地區">全部地區</option>
-          <option value="北區">北區</option>
-          <option value="中區">中區</option>
-          <option value="南區">南區</option>
-        </select>
-        <select name="" id="" class="search_by_product">
-          <option value="依品項搜尋" disabled selected hidden>
-            依品項搜尋
-          </option>
-          <option value="全部品項">全部品項</option>
-          <option value="商品A">商品A</option>
-          <option value="商品B">商品B</option>
-          <option value="商品C">商品C</option>
-        </select>
+      <div class="top_list">
+        <div class="search_area">
+          <select name="" id="" class="search_by_region">
+            <option value="依地區搜尋" disabled selected hidden>
+              依地區搜尋
+            </option>
+            <option value="全部地區">全部地區</option>
+            <option value="北區">北區</option>
+            <option value="中區">中區</option>
+            <option value="南區">南區</option>
+          </select>
+          <select name="" id="" class="search_by_product">
+            <option value="依品項搜尋" disabled selected hidden>
+              依品項搜尋
+            </option>
+            <option value="全部品項">全部品項</option>
+            <option value="商品A">商品A</option>
+            <option value="商品B">商品B</option>
+            <option value="商品C">商品C</option>
+          </select>
+          <div>
+            <input
+              type="text"
+              placeholder="請輸入案件名稱"
+              class="search_input"
+            />
+            <input type="button" class="search_btn" value="搜尋" />
+          </div>
+        </div>
+
+        <div class="total_product"></div>
       </div>
 
-      <input type="text" placeholder="請輸入案件名稱" class="search_input" />
-      <input type="button" class="search_btn" value="搜尋" />
       <div>
         <table class="orderTable">
           <thead>
@@ -110,6 +120,7 @@
               <th>品項</th>
               <th>數量</th>
               <th>備註</th>
+              <th></th>
               <th></th>
               <th></th>
               <th></th>

@@ -8,8 +8,12 @@ const getOrderData = async () => {
     const response = await fetch(url);
     orderData = await response.json();
     console.log(orderData);
+    orderList.innerHTML = "<tr>Loading...</tr>";
     //init
-    render(orderData);
+    setTimeout(() => {
+      render(orderData);
+      getTotalProducts(orderData);
+    }, 500);
   } catch (err) {
     console.log(err);
   }
@@ -32,7 +36,8 @@ const render = (orderData) => {
     <td id="quantity${item.id}">${item.quantity}</td>
     <td id="description${item.id}">${item.description}</td>
     <td><button class="edit_btn" id="edit_btn${item.id}" data-id=${item.id}>編輯</button></td>
-    <td><button class="save_btn" id="save_btn${item.id}" data-id=${item.id} style="display:none">確定變更</button></td>
+    <td><button class="cancel_btn" id="cancel_btn${item.id}" data-id=${item.id} style="display:none">取消</button></td>
+    <td><button class="save_btn" id="save_btn${item.id}" data-id=${item.id} style="display:none">變更</button></td>
     <td data-id=${item.id} class="delete_btn"><i data-id=${item.id} class="bi bi-trash"></i></td>
   </tr>
     `;
@@ -138,8 +143,6 @@ const editOrder = (id) => {
   const productData = product.textContent;
   const quantityData = quantity.textContent;
   const descriptionData = description.textContent;
-
-  // region.innerHTML = `<input type='text' id="regionInput${id}" value="${regionData}">`;
   region.innerHTML = `<select id="regionInput${id}"> 
                          <option value="北區" 
                           ${
@@ -156,7 +159,6 @@ const editOrder = (id) => {
                        </select>`;
   clientName.innerHTML = `<input type='text' id="clientNameInput${id}" value="${clientNameData}">`;
   date.innerHTML = `<input type='date' id="dateInput${id}" value="${dateData}">`;
-  // product.innerHTML = `<input type='text' id="productInput${id}" value="${productData}">`;
   product.innerHTML = `<select  id="productInput${id}"> 
                           <option value="商品A"
                           ${productData === "商品A" ? "selected" : ""}
@@ -170,6 +172,23 @@ const editOrder = (id) => {
                         </select>`;
   quantity.innerHTML = `<input type='number' id="quantityInput${id}" value="${quantityData}">`;
   description.innerHTML = `<input type='text' id="descriptionInput${id}" value="${descriptionData}">`;
+};
+
+//取消編輯訂單動作
+const cancelEdit = (id) => {
+  const region = document.getElementById(`region${id}`);
+  const clientName = document.getElementById(`clientName${id}`);
+  const date = document.getElementById(`date${id}`);
+  const product = document.getElementById(`product${id}`);
+  const quantity = document.getElementById(`quantity${id}`);
+  const description = document.getElementById(`description${id}`);
+
+  region.textContent = orderData[id - 1].region;
+  clientName.textContent = orderData[id - 1].clientName;
+  date.textContent = orderData[id - 1].date;
+  product.textContent = orderData[id - 1].product;
+  quantity.textContent = orderData[id - 1].quantity;
+  description.textContent = orderData[id - 1].description;
 };
 
 //儲存更改後的訂單資料
@@ -216,21 +235,38 @@ const editOrderHandler = (e) => {
     e.target.style.display = "none";
     const orderId = e.target.getAttribute("data-id");
     const saveBtn = document.getElementById(`save_btn${orderId}`);
+    const cancelBtn = document.getElementById(`cancel_btn${orderId}`);
     saveBtn.style.display = "block";
+    cancelBtn.style.display = "block";
     editOrder(orderId);
   }
 };
+
+const cancelEditHandler = (e) => {
+  if (e.target.getAttribute("class") == "cancel_btn") {
+    e.target.style.display = "none";
+    const orderId = e.target.getAttribute("data-id");
+    const editBtn = document.getElementById(`edit_btn${orderId}`);
+    const saveBtn = document.getElementById(`save_btn${orderId}`);
+    console.log(editBtn);
+    editBtn.style.display = "block";
+    saveBtn.style.display = "none";
+    cancelEdit(orderId);
+  }
+};
+
 const saveOrderHandler = (e) => {
   if (e.target.getAttribute("class") == "save_btn") {
     e.target.style.display = "none";
     const orderId = e.target.getAttribute("data-id");
-    const editBtn = document.getElementById(`edit_btn${orderId}`);
-    editBtn.style.display == "block";
+    const cancelBtn = document.getElementById(`cancel_btn${orderId}`);
+    cancelBtn.style.display = "none";
     saveOrder(orderId);
   }
 };
 
 orderList.addEventListener("click", editOrderHandler);
+orderList.addEventListener("click", cancelEditHandler);
 orderList.addEventListener("click", saveOrderHandler);
 
 // 依地區篩選
@@ -293,6 +329,33 @@ searchBtn.addEventListener("click", () => {
   productSelect.value = "依品項搜尋";
   searchOrder();
 });
+
+//顯示目前產品出貨總數
+const totalArea = document.querySelector(".total_product");
+const getTotalProducts = (orderData) => {
+  let total = {
+    productA: 0,
+    productB: 0,
+    productC: 0,
+  };
+  orderData.forEach((item) => {
+    if (item.product === "商品A") {
+      total.productA += Number(item.quantity);
+    } else if (item.product === "商品B") {
+      total.productB += Number(item.quantity);
+    } else if (item.product === "商品C") {
+      total.productC += Number(item.quantity);
+    }
+  });
+  totalArea.innerHTML = `
+    <p>預計出貨總數:</p>
+    <ul>
+    <li>商品A : ${total.productA}</li>
+    <li>商品B : ${total.productB}</li>
+    <li>商品C : ${total.productC}</li>
+    </ul>
+`;
+};
 
 //VALIDATE.JS 表單驗證
 const constraints = {

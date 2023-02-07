@@ -84,22 +84,38 @@
       }
     }
     .list {
-      .filterArea {
-        margin-bottom: 1rem;
+      .top_list {
         display: flex;
-        justify-content: flex-start;
-        gap: 20px;
+        justify-content: space-between;
+        .search_area {
+          select {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            padding: 3px 5px;
+          }
+          .search_input {
+            margin-bottom: 1rem;
+            height: 2rem;
+            text-indent: 10px;
+            display: inline-block;
+          }
+          .search_btn {
+            padding: 3px 5px;
+            font-size: 1rem;
+            cursor: pointer;
+          }
+        }
+        .total_product {
+          font-size: 0.8rem;
+          ul {
+            list-style-type: none;
+            li {
+              padding: 5px 0;
+            }
+          }
+        }
       }
-      .search_input {
-        margin-bottom: 1rem;
-        height: 2rem;
-        text-indent: 10px;
-      }
-      .search_btn {
-        padding: 3px 5px;
-        font-size: 1rem;
-        cursor: pointer;
-      }
+
       .orderTable {
         width: 100%;
         thead {
@@ -123,6 +139,11 @@
             padding: 0.4rem 0;
             padding-left: 1.5rem;
             .edit_btn {
+              padding: 3px 5px;
+              font-size: 1rem;
+              cursor: pointer;
+            }
+            .cancel_btn {
               padding: 3px 5px;
               font-size: 1rem;
               cursor: pointer;
