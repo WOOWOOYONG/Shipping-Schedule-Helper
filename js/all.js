@@ -1,7 +1,9 @@
+import { showErrors } from "./validate.js";
+
 // json-server-url
 const url = "https://try-rwrv.onrender.com/orders";
-let orderData = [];
 
+let orderData = [];
 const orderList = document.querySelector(".orderList");
 
 //取得訂單資料
@@ -12,11 +14,12 @@ const getOrderData = async () => {
     orderData = await response.json();
     console.log(orderData);
     //預設依出貨日期分類
-    const sortOrderData = orderData.sort((a, b) => {
+    const sortedData = [...orderData];
+    sortedData.sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     });
     setTimeout(() => {
-      render(sortOrderData);
+      render(sortedData);
       getTotalProducts(orderData);
     }, 500);
   } catch (err) {
@@ -31,19 +34,29 @@ getOrderData();
 const render = (orderData) => {
   let str = "";
   orderData.forEach((item) => {
+    const {
+      region,
+      clientName,
+      date,
+      createAt,
+      product,
+      quantity,
+      description,
+      id,
+    } = item;
     str += `
     <tr>
-    <td id="region${item.id}">${item.region}</td>
-    <td id="clientName${item.id}">${item.clientName}</td>
-    <td id="date${item.id}">${item.date}</td>
-    <td id="date${item.id}">${item.createAt}</td>
-    <td id="product${item.id}">${item.product}</td>
-    <td id="quantity${item.id}">${item.quantity}</td>
-    <td id="description${item.id}">${item.description}</td>
-    <td><button class="edit_btn" id="edit_btn${item.id}" data-id=${item.id}>編輯</button></td>
-    <td><button class="cancel_btn" id="cancel_btn${item.id}" data-id=${item.id} style="display:none">取消</button></td>
-    <td><button class="save_btn" id="save_btn${item.id}" data-id=${item.id} style="display:none">變更</button></td>
-    <td data-id=${item.id} class="delete_btn"><i data-id=${item.id} class="bi bi-trash"></i></td>
+    <td id="region${id}">${region}</td>
+    <td id="clientName${id}">${clientName}</td>
+    <td id="date${id}">${date}</td>
+    <td id="date${id}">${createAt}</td>
+    <td id="product${id}">${product}</td>
+    <td id="quantity${id}">${quantity}</td>
+    <td id="description${id}">${description}</td>
+    <td><button class="edit_btn" id="edit_btn${id}" data-id=${id}>編輯</button></td>
+    <td><button class="cancel_btn" id="cancel_btn${id}" data-id=${id} style="display:none">取消</button></td>
+    <td><button class="save_btn" id="save_btn${id}" data-id=${id} style="display:none">變更</button></td>
+    <td data-id=${id} class="delete_btn"><i data-id=${id} class="bi bi-trash"></i></td>
   </tr>
     `;
   });
@@ -150,12 +163,12 @@ const editOrder = (id) => {
   const productData = product.textContent;
   const quantityData = quantity.textContent;
   const descriptionData = description.textContent;
-  region.innerHTML = `<select id="regionInput${id}"> 
-                         <option value="北區" 
+  region.innerHTML = `<select id="regionInput${id}">
+                         <option value="北區"
                           ${
                             regionData === "北區" ? "selected" : ""
                           }>北區</option>
-                         <option value="中區" 
+                         <option value="中區"
                          ${
                            regionData === "中區" ? "selected" : ""
                          }>中區</option>
@@ -166,7 +179,7 @@ const editOrder = (id) => {
                        </select>`;
   clientName.innerHTML = `<input type='text' id="clientNameInput${id}" value="${clientNameData}">`;
   date.innerHTML = `<input type='date' id="dateInput${id}" value="${dateData}">`;
-  product.innerHTML = `<select  id="productInput${id}"> 
+  product.innerHTML = `<select  id="productInput${id}">
                           <option value="商品A"
                           ${productData === "商品A" ? "selected" : ""}
                           >商品A</option>
@@ -196,6 +209,8 @@ const cancelEdit = (id) => {
   product.textContent = orderData[id - 1].product;
   quantity.textContent = orderData[id - 1].quantity;
   description.textContent = orderData[id - 1].description;
+  console.log(orderData);
+  console.log(orderData[id - 1]);
 };
 
 //儲存更改後的訂單資料
@@ -222,7 +237,7 @@ const saveOrder = (id) => {
 const editOrderData = async (editedOrder, id) => {
   try {
     const res = await fetch(url + `/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -255,7 +270,6 @@ const cancelEditHandler = (e) => {
     const orderId = e.target.getAttribute("data-id");
     const editBtn = document.getElementById(`edit_btn${orderId}`);
     const saveBtn = document.getElementById(`save_btn${orderId}`);
-    console.log(editBtn);
     editBtn.style.display = "block";
     saveBtn.style.display = "none";
     cancelEdit(orderId);
@@ -390,33 +404,6 @@ const sortByAdding = () => {
 sortByAddBtn.addEventListener("click", sortByAdding);
 
 //VALIDATE.JS 表單驗證
-const constraints = {
-  clientName: {
-    presence: {
-      message: "此為必填欄位",
-    },
-  },
-  date: {
-    presence: {
-      message: "此為必填欄位",
-    },
-  },
-  quantity: {
-    presence: {
-      message: "此為必填欄位",
-    },
-  },
-};
-
-const errors = validate(form, constraints, { fullMessages: false });
-const newarr = Object.keys(errors);
-
-function showErrors() {
-  newarr.forEach((keys) => {
-    document.querySelector(`.${keys}`).textContent = errors[keys];
-  });
-}
-
 inputs.forEach((item) => {
   item.addEventListener("change", () => {
     if (item.value == "") {

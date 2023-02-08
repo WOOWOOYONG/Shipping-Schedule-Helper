@@ -110,19 +110,6 @@
   cursor: pointer;
   border-radius: 5px;
 }
-* body .list .top_list .search_area div:last-child {
-  margin-bottom: 1rem;
-}
-* body .list .top_list .search_area div:last-child button {
-  padding: 4px 8px;
-  margin-right: 0.5rem;
-  cursor: pointer;
-  border-radius: 5px;
-}
-* body .list .top_list .search_area div:last-child .sort_active {
-  background-color: rgb(98, 141, 181);
-  color: #fff;
-}
 * body .list .top_list .total_product {
   font-size: 0.8rem;
 }
@@ -142,6 +129,27 @@
 }
 * body .list .orderTable thead th {
   padding: 8px 15px;
+}
+* body .list .orderTable thead th:nth-child(3),
+* body .list .orderTable thead th:nth-child(4) {
+  position: relative;
+}
+* body .list .orderTable thead th:nth-child(3) i,
+* body .list .orderTable thead th:nth-child(4) i {
+  position: absolute;
+  right: 1rem;
+  bottom: 0;
+  margin-left: 1.2rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+* body .list .orderTable thead th:nth-child(3) i:hover,
+* body .list .orderTable thead th:nth-child(4) i:hover {
+  color: #36ec9a;
+}
+* body .list .orderTable thead th:nth-child(3) .sort_active,
+* body .list .orderTable thead th:nth-child(4) .sort_active {
+  color: #36ec9a;
 }
 * body .list .orderTable tbody tr {
   border-bottom: 1px solid #ddd;

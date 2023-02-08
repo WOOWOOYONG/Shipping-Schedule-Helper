@@ -107,19 +107,6 @@
             cursor: pointer;
             border-radius: 5px;
           }
-          div:last-child {
-            margin-bottom: 1rem;
-            button {
-              padding: 4px 8px;
-              margin-right: 0.5rem;
-              cursor: pointer;
-              border-radius: 5px;
-            }
-            .sort_active {
-              background-color: rgb(98, 141, 181);
-              color: #fff;
-            }
-          }
         }
         .total_product {
           font-size: 0.8rem;
@@ -142,6 +129,24 @@
           }
           th {
             padding: 8px 15px;
+          }
+          th:nth-child(3),
+          th:nth-child(4) {
+            position: relative;
+            i {
+              position: absolute;
+              right: 1rem;
+              bottom: 0;
+              margin-left: 1.2rem;
+              cursor: pointer;
+              font-size: 1.4rem;
+              &:hover {
+                color: #36ec9a;
+              }
+            }
+            .sort_active {
+              color: #36ec9a;
+            }
           }
         }
         tbody {

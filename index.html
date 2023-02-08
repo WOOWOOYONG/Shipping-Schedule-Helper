@@ -11,7 +11,7 @@
     />
     <link rel="stylesheet" href="./styles/all.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
-    <script src="script.js" defer></script>
+    <script src="./js/all.js" type="module" defer></script>
   </head>
   <body>
     <section class="add_data">
@@ -105,12 +105,6 @@
             />
             <input type="button" class="search_btn" value="搜尋" />
           </div>
-          <div>
-            <button type="button" class="sort_by_shipping sort_active">
-              依出貨日期排序
-            </button>
-            <button type="button" class="sort_by_adding">依新增日期排序</button>
-          </div>
         </div>
 
         <div class="total_product"></div>
@@ -122,8 +116,14 @@
             <tr>
               <th>地區</th>
               <th>案件名稱</th>
-              <th>出貨日期</th>
-              <th>新增日期</th>
+              <th>
+                出貨日期
+                <i class="bi bi-sort-down-alt sort_by_shipping sort_active"></i>
+              </th>
+              <th>
+                新增日期
+                <i class="bi bi-sort-down-alt sort_by_adding"></i>
+              </th>
               <th>品項</th>
               <th>數量</th>
               <th>備註</th>
