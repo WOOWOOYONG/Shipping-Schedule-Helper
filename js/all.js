@@ -1,4 +1,15 @@
 import { showErrors } from "./validate.js";
+import {
+  render,
+  getTotalProducts,
+  sortByShipping,
+  sortByAdding,
+  filterByRegion,
+  filterByProduct,
+  searchOrder,
+} from "./renderData.js";
+
+import { getProduct, getRegion, getSalesData } from "./chart.js";
 
 // json-server-url
 const url = "https://try-rwrv.onrender.com/orders";
@@ -9,7 +20,7 @@ const orderList = document.querySelector(".orderList");
 //取得訂單資料
 const getOrderData = async () => {
   try {
-    orderList.innerHTML = "<tr>Loading...</tr>";
+    orderList.innerHTML = `<strong class="d-block mt-5">Loading...</strong>`;
     const response = await fetch(url);
     orderData = await response.json();
     console.log(orderData);
@@ -22,6 +33,9 @@ const getOrderData = async () => {
       render(sortedData);
       getTotalProducts(orderData);
     }, 500);
+    getProduct(orderData);
+    getRegion(orderData);
+    getSalesData(orderData);
   } catch (err) {
     console.log(err);
   }
@@ -29,39 +43,6 @@ const getOrderData = async () => {
 
 //init
 getOrderData();
-
-// 渲染訂單資料
-const render = (orderData) => {
-  let str = "";
-  orderData.forEach((item) => {
-    const {
-      region,
-      clientName,
-      date,
-      createAt,
-      product,
-      quantity,
-      description,
-      id,
-    } = item;
-    str += `
-    <tr>
-    <td id="region${id}">${region}</td>
-    <td id="clientName${id}">${clientName}</td>
-    <td id="date${id}">${date}</td>
-    <td id="date${id}">${createAt}</td>
-    <td id="product${id}">${product}</td>
-    <td id="quantity${id}">${quantity}</td>
-    <td id="description${id}">${description}</td>
-    <td><button class="edit_btn" id="edit_btn${id}" data-id=${id}>編輯</button></td>
-    <td><button class="cancel_btn" id="cancel_btn${id}" data-id=${id} style="display:none">取消</button></td>
-    <td><button class="save_btn" id="save_btn${id}" data-id=${id} style="display:none">變更</button></td>
-    <td data-id=${id} class="delete_btn"><i data-id=${id} class="bi bi-trash"></i></td>
-  </tr>
-    `;
-  });
-  orderList.innerHTML = str;
-};
 
 //新增訂單表格
 const form = document.querySelector(".add_form");
@@ -78,19 +59,19 @@ const addBtn = document.querySelector(".add_btn");
 
 //新增訂單資料;
 const addOrderHandler = () => {
-  if (clientName.value == "" || date.value == "" || quantity.value == "") {
+  if (clientName.value === "" || date.value === "" || quantity.value === "") {
     showErrors();
     return;
   } else {
     inputs.forEach((item) => {
       item.nextElementSibling.textContent = "";
     });
-    const date = new Date();
+    const createDate = new Date();
     const newOrder = {
       region: region.value,
       clientName: clientName.value.trim(),
       date: date.value,
-      createAt: date.toISOString().split("T")[0],
+      createAt: createDate.toISOString().split("T")[0],
       product: product.value,
       quantity: quantity.value,
       description: description.value.trim(),
@@ -140,7 +121,7 @@ const deleteOrder = async (id) => {
 };
 
 const deleteOrderHandler = (e) => {
-  if (e.target.getAttribute("class") == "bi bi-trash") {
+  if (e.target.getAttribute("class") === "bi bi-trash") {
     const orderId = e.target.getAttribute("data-id");
     deleteOrder(orderId);
   }
@@ -209,8 +190,6 @@ const cancelEdit = (id) => {
   product.textContent = orderData[id - 1].product;
   quantity.textContent = orderData[id - 1].quantity;
   description.textContent = orderData[id - 1].description;
-  console.log(orderData);
-  console.log(orderData[id - 1]);
 };
 
 //儲存更改後的訂單資料
@@ -253,7 +232,7 @@ const editOrderData = async (editedOrder, id) => {
 };
 
 const editOrderHandler = (e) => {
-  if (e.target.getAttribute("class") == "edit_btn") {
+  if (e.target.getAttribute("class") === "edit_btn") {
     e.target.style.display = "none";
     const orderId = e.target.getAttribute("data-id");
     const saveBtn = document.getElementById(`save_btn${orderId}`);
@@ -265,7 +244,7 @@ const editOrderHandler = (e) => {
 };
 
 const cancelEditHandler = (e) => {
-  if (e.target.getAttribute("class") == "cancel_btn") {
+  if (e.target.getAttribute("class") === "cancel_btn") {
     e.target.style.display = "none";
     const orderId = e.target.getAttribute("data-id");
     const editBtn = document.getElementById(`edit_btn${orderId}`);
@@ -277,7 +256,7 @@ const cancelEditHandler = (e) => {
 };
 
 const saveOrderHandler = (e) => {
-  if (e.target.getAttribute("class") == "save_btn") {
+  if (e.target.getAttribute("class") === "save_btn") {
     e.target.style.display = "none";
     const orderId = e.target.getAttribute("data-id");
     const cancelBtn = document.getElementById(`cancel_btn${orderId}`);
@@ -291,126 +270,79 @@ orderList.addEventListener("click", cancelEditHandler);
 orderList.addEventListener("click", saveOrderHandler);
 
 // 依地區篩選
-const filterByRegion = (region) => {
-  const filteredData = orderData.filter((item) => {
-    if (region === item.region) {
-      return item;
-    } else if (region === "全部地區") {
-      return item;
-    } else if (!region) {
-      return item;
-    }
-  });
-  render(filteredData);
-};
 const regionSelect = document.querySelector(".search_by_region");
 regionSelect.addEventListener("change", () => {
   productSelect.value = "依品項搜尋";
-  filterByRegion(regionSelect.value);
+  filterByRegion(regionSelect.value, orderData);
 });
 
 // 依品項篩選
-const filterByProduct = (product) => {
-  const filteredData = orderData.filter((item) => {
-    if (product === item.product) {
-      return item;
-    } else if (product === "全部品項") {
-      return item;
-    } else if (!product) {
-      return item;
-    }
-  });
-  render(filteredData);
-};
-
 const productSelect = document.querySelector(".search_by_product");
 productSelect.addEventListener("change", () => {
   regionSelect.value = "依地區搜尋";
-  filterByProduct(productSelect.value);
+  filterByProduct(productSelect.value, orderData);
 });
 
 // 依輸入案件名稱搜尋
-const searchInput = document.querySelector(".search_input");
 const searchBtn = document.querySelector(".search_btn");
-
-const searchOrder = () => {
-  if (searchInput.value.trim() === "") {
-    alert("請先輸入內容");
-    return;
-  }
-  const filteredData = orderData.filter((item) => {
-    return item.clientName.match(searchInput.value.trim());
-  });
-  searchInput.value = "";
-  render(filteredData);
-};
-
 searchBtn.addEventListener("click", () => {
   regionSelect.value = "依地區搜尋";
   productSelect.value = "依品項搜尋";
-  searchOrder();
+  searchOrder(orderData);
 });
 
-//顯示目前產品出貨總數
-const totalArea = document.querySelector(".total_product");
-const getTotalProducts = (orderData) => {
-  let total = {
-    productA: 0,
-    productB: 0,
-    productC: 0,
-  };
-  orderData.forEach((item) => {
-    if (item.product === "商品A") {
-      total.productA += Number(item.quantity);
-    } else if (item.product === "商品B") {
-      total.productB += Number(item.quantity);
-    } else if (item.product === "商品C") {
-      total.productC += Number(item.quantity);
-    }
-  });
-  totalArea.innerHTML = `
-    <p>預計出貨總數:</p>
-    <ul>
-    <li>商品A : ${total.productA}</li>
-    <li>商品B : ${total.productB}</li>
-    <li>商品C : ${total.productC}</li>
-    </ul>
-`;
-};
-
-//依出貨日期排序
+//依日期排序
 const sortByShipBtn = document.querySelector(".sort_by_shipping");
-const sortByShipping = () => {
-  sortByShipBtn.classList.add("sort_active");
-  sortByAddBtn.classList.remove("sort_active");
-  const sortOrderData = orderData.sort((a, b) => {
-    //使用 new Date() 將字符串轉換為日期對象
-    return new Date(a.date) - new Date(b.date);
-  });
-  render(sortOrderData);
-};
-sortByShipBtn.addEventListener("click", sortByShipping);
+const sortByAddBtn = document.querySelector(".sort_by_adding");
+//依出貨日期排序
+sortByShipBtn.addEventListener("click", () => {
+  sortByShipping(orderData);
+});
 
 //依新增日期排序
-const sortByAddBtn = document.querySelector(".sort_by_adding");
-const sortByAdding = () => {
-  sortByAddBtn.classList.add("sort_active");
-  sortByShipBtn.classList.remove("sort_active");
-  const sortOrderData = orderData.sort((a, b) => {
-    return new Date(a.createAt) - new Date(b.createAt);
-  });
-  render(sortOrderData);
-};
-sortByAddBtn.addEventListener("click", sortByAdding);
+sortByAddBtn.addEventListener("click", () => {
+  sortByAdding(orderData);
+});
 
 //VALIDATE.JS 表單驗證
 inputs.forEach((item) => {
   item.addEventListener("change", () => {
-    if (item.value == "") {
-      showErrors();
-      return;
-    } else {
-      item.nextElementSibling.textContent = "";
-    }
+    item.value === ""
+      ? showErrors()
+      : (item.nextElementSibling.textContent = "");
   });
+});
+
+//控制新增表單顯示隱藏
+const showFormBtn = document.querySelector(".show_form");
+const hideFormBtn = document.querySelector(".hide_form");
+const formArea = document.querySelector(".add_data");
+
+showFormBtn.addEventListener("click", (e) => {
+  e.target.style.display = "none";
+  hideFormBtn.style.display = "block";
+  formArea.classList.toggle("show_add_data");
+});
+
+hideFormBtn.addEventListener("click", (e) => {
+  e.target.style.display = "none";
+  showFormBtn.style.display = "block";
+  formArea.classList.toggle("show_add_data");
+});
+
+//控制圖表顯示隱藏
+const showChartBtn = document.querySelector(".show_chart");
+const hideChartBtn = document.querySelector(".hide_chart");
+const chartArea = document.querySelector(".chart");
+
+showChartBtn.addEventListener("click", (e) => {
+  e.target.style.display = "none";
+  hideChartBtn.style.display = "block";
+  chartArea.classList.toggle("show_chart_data");
+});
+
+hideChartBtn.addEventListener("click", (e) => {
+  e.target.style.display = "none";
+  showChartBtn.style.display = "block";
+  chartArea.classList.toggle("show_chart_data");
 });

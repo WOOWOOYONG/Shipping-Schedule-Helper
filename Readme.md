@@ -14,14 +14,15 @@
 - 可依地區篩選
 - 編輯出貨資訊
 - 刪除出貨資訊
+- 可依照出貨／新增日期排序
+- 出貨資料分析圖表
 
 ## 待加入功能:
 
-- 依照日期排序
 - 出貨/未出貨頁籤
-- 預定出貨圖表
 
 ## 使用工具
 
 - [Validate.js](https://validatejs.org/#validate-js)
 - [JSON Server](https://github.com/typicode/json-server)
+- [C3.js](https://c3js.org/)
