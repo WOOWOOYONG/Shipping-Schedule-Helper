@@ -129,7 +129,7 @@ const renderC3sales = (data) => {
     bindto: "#salesChart",
     size: {
       height: 400,
-      width: 1800,
+      width: 1400,
     },
     data: {
       xs: {
